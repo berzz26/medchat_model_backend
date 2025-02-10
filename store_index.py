@@ -1,3 +1,7 @@
+#ONLY RUN THIS TO UPDATE THE VECTOR EMBEDDINGS OR OVERRIDE IT
+#RUNNING IT WILL CONSUME TIME AS THE DATA WILL BE UPSERT TO PINECONE VECTORDB
+
+
 from src.helper import load_pdf, text_split, download_hugging_face_embeddings
 from langchain_pinecone import PineconeVectorStore
 import pinecone
