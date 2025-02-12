@@ -69,18 +69,23 @@ def root():
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    print("User Input:", request.msg)
-    
-    result = qa({"query": request.msg})
-    cleaned_response = result["result"].replace("\n", " ")  # Removes newlines for cleaner output
-    
-    print("Response:", cleaned_response)
-    
-    # Return in the format expected by the useChat hook
-    return {
-        "id": str(uuid.uuid4()),  # Add import uuid at the top
-        "role": "assistant",
-        "content": cleaned_response
-    }
+    try:
+        print("User Input:", request.msg)
+        
+        result = qa({"query": request.msg})
+        cleaned_response = result["result"].replace("\n", " ")
+        
+        response_data = {
+            "id": str(uuid.uuid4()),
+            "role": "assistant",
+            "content": cleaned_response
+        }
+        
+        print("Sending Response:", response_data)
+        return response_data
+        
+    except Exception as e:
+        print("Error:", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Run with: uvicorn app:app --host 0.0.0.0 --port 8080 --reload
