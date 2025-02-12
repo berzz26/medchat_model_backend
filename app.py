@@ -11,6 +11,7 @@ from src.prompt import *
 from langchain_community.vectorstores import Pinecone as LangchainPinecone
 from pinecone import Pinecone
 from langchain.prompts import PromptTemplate
+import uuid
 
 # Load environment variables
 load_dotenv()
@@ -67,7 +68,7 @@ def root():
     return {"message": "FastAPI server is running!"}
 
 @app.post("/chat")
-def chat(request: ChatRequest):
+async def chat(request: ChatRequest):
     print("User Input:", request.msg)
     
     result = qa({"query": request.msg})
@@ -75,6 +76,11 @@ def chat(request: ChatRequest):
     
     print("Response:", cleaned_response)
     
-    return {"response": cleaned_response}
+    # Return in the format expected by the useChat hook
+    return {
+        "id": str(uuid.uuid4()),  # Add import uuid at the top
+        "role": "assistant",
+        "content": cleaned_response
+    }
 
 # Run with: uvicorn app:app --host 0.0.0.0 --port 8080 --reload
